@@ -1,0 +1,566 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RESTful API Tester</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+        .api-section { margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .method-badge { margin-right: 10px; }
+        .response-area { background: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; margin-top: 10px; border-radius: 3px; }
+        .json-input { font-family: monospace; }
+        .endpoint-title { color: #495057; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">RESTful API Testing Interface</h1>
+                <p class="text-center text-muted">Test your RESTful endpoints like Swagger</p>
+                <hr>
+                
+                <!-- GET Section -->
+                <div class="api-section">
+                    <h3><span class="label label-success method-badge">GET</span>GET Endpoints</h3>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">GET /api/products - Get all products (DEMO)</span>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-success" onclick="testGetAll()">Execute</button>
+                            <div id="getall-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">GET /api/products/{id} - Get product by ID (Easy 1)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="getid-input" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <button class="btn btn-success" onclick="testGetById()">Execute</button>
+                            <div id="getid-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">GET /api/products/category/{category} - Get by category (Easy 2)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Category:</label>
+                                <input type="text" class="form-control" id="getcategory-input" placeholder="Enter category" style="width:200px;">
+                            </div>
+                            <button class="btn btn-success" onclick="testGetByCategory()">Execute</button>
+                            <div id="getcategory-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">GET /api/products/search - Search products (Medium)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Name (optional):</label>
+                                <input type="text" class="form-control" id="search-name" placeholder="Enter product name" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Min Price (optional):</label>
+                                <input type="number" class="form-control" id="search-minprice" placeholder="Enter min price" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Price (optional):</label>
+                                <input type="number" class="form-control" id="search-maxprice" placeholder="Enter max price" style="width:200px;">
+                            </div>
+                            <button class="btn btn-success" onclick="testSearchProducts()">Execute</button>
+                            <div id="search-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">GET /api/products/pricerange - Get by price range (Challenge)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Min Price:</label>
+                                <input type="number" class="form-control" id="pricerange-min" placeholder="Enter min price" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Price:</label>
+                                <input type="number" class="form-control" id="pricerange-max" placeholder="Enter max price" style="width:200px;">
+                            </div>
+                            <button class="btn btn-success" onclick="testPriceRange()">Execute</button>
+                            <div id="pricerange-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POST Section -->
+                <div class="api-section">
+                    <h3><span class="label label-primary method-badge">POST</span>POST Endpoints</h3>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">POST /api/products - Add new product (DEMO)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="post-input" rows="6" placeholder='{"name": "Sample Product", "price": 29.99, "category": "Electronics", "stock": 10, "description": "A sample product"}'></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testPost()">Execute</button>
+                            <div id="post-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">POST /api/products/validated - Add with validation (Easy 1)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="postvalidated-input" rows="6" placeholder='{"name": "New Product", "price": 49.99, "category": "Electronics", "stock": 5, "description": "Product with validation"}'></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testPostValidated()">Execute</button>
+                            <div id="postvalidated-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">POST /api/customers - Add new customer (Easy 2)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="postcustomer-input" rows="4" placeholder='{"name": "John Doe", "email": "john@example.com", "phone": "123-456-7890"}'></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testPostCustomer()">Execute</button>
+                            <div id="postcustomer-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">POST /api/products/required - Add with required fields (Medium)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="postrequired-input" rows="6" placeholder='{"name": "Required Product", "price": 99.99, "category": "Electronics", "stock": 3, "description": "Product with required validation"}'></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testPostRequired()">Execute</button>
+                            <div id="postrequired-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">POST /api/products/pricevalidation - Add with price validation (Challenge)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="postprice-input" rows="6" placeholder='{"name": "Price Validated Product", "price": 25.99, "category": "Electronics", "stock": 7, "description": "Product with price validation"}'></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="testPostPrice()">Execute</button>
+                            <div id="postprice-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PUT Section -->
+                <div class="api-section">
+                    <h3><span class="label label-warning method-badge">PUT</span>PUT Endpoints</h3>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">PUT /api/products/{id} - Update product (DEMO)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="put-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="put-input" rows="6" placeholder='{"name": "Updated Product", "price": 39.99, "category": "Electronics", "stock": 15, "description": "Updated description"}'></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="testPut()">Execute</button>
+                            <div id="put-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">PUT /api/products/{id}/name - Update product name only (Easy 1)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="putname-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>New Name:</label>
+                                <input type="text" class="form-control" id="putname-name" placeholder="Enter new name" style="width:300px;">
+                            </div>
+                            <button class="btn btn-warning" onclick="testPutName()">Execute</button>
+                            <div id="putname-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">PUT /api/products/{id}/price - Update product price only (Easy 2)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="putprice-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>New Price:</label>
+                                <input type="number" class="form-control" id="putprice-price" placeholder="Enter new price" style="width:200px;">
+                            </div>
+                            <button class="btn btn-warning" onclick="testPutPrice()">Execute</button>
+                            <div id="putprice-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">PUT /api/products/{id}/validated - Update with validation (Medium)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="putvalidated-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="putvalidated-input" rows="6" placeholder='{"name": "Validated Update", "price": 59.99, "category": "Electronics", "stock": 8, "description": "Updated with validation"}'></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="testPutValidated()">Execute</button>
+                            <div id="putvalidated-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">PUT /api/products/{id}/stock - Update with stock check (Challenge)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="putstock-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <div class="form-group">
+                                <label>JSON Body:</label>
+                                <textarea class="form-control json-input" id="putstock-input" rows="6" placeholder='{"name": "Stock Checked", "price": 79.99, "category": "Electronics", "stock": 5, "description": "Updated with stock validation"}'></textarea>
+                            </div>
+                            <button class="btn btn-warning" onclick="testPutStock()">Execute</button>
+                            <div id="putstock-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DELETE Section -->
+                <div class="api-section">
+                    <h3><span class="label label-danger method-badge">DELETE</span>DELETE Endpoints</h3>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">DELETE /api/products/{id} - Delete product by ID (DEMO)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="delete-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <button class="btn btn-danger" onclick="testDelete()">Execute</button>
+                            <div id="delete-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">DELETE /api/products/name/{name} - Delete by name (Easy 1)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product Name:</label>
+                                <input type="text" class="form-control" id="deletename-input" placeholder="Enter product name" style="width:200px;">
+                            </div>
+                            <button class="btn btn-danger" onclick="testDeleteByName()">Execute</button>
+                            <div id="deletename-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">DELETE /api/customers/{id} - Delete customer by ID (Easy 2)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Customer ID:</label>
+                                <input type="number" class="form-control" id="deletecustomer-id" placeholder="Enter customer ID" style="width:200px;">
+                            </div>
+                            <button class="btn btn-danger" onclick="testDeleteCustomer()">Execute</button>
+                            <div id="deletecustomer-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">DELETE /api/products/{id}/checked - Delete with check (Medium)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="deletecheck-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <button class="btn btn-danger" onclick="testDeleteChecked()">Execute</button>
+                            <div id="deletecheck-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="endpoint-title">DELETE /api/products/{id}/business - Delete with business rule (Challenge)</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Product ID:</label>
+                                <input type="number" class="form-control" id="deletebusiness-id" placeholder="Enter product ID" style="width:200px;">
+                            </div>
+                            <button class="btn btn-danger" onclick="testDeleteBusiness()">Execute</button>
+                            <div id="deletebusiness-response" class="response-area" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    
+    <script>
+        function makeAjaxCall(url, method, data, responseDiv) {
+            var settings = {
+                url: url,
+                type: method,
+                dataType: 'json',
+                success: function(response) {
+                    showResponse(responseDiv, 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse(responseDiv, 'error', xhr.responseText || error);
+                }
+            };
+            
+            if (data && (method === 'POST' || method === 'PUT')) {
+                settings.contentType = 'application/json';
+                settings.data = JSON.stringify(data);
+            }
+            
+            $.ajax(settings);
+        }
+        
+        function showResponse(elementId, type, response) {
+            var element = $('#' + elementId);
+            element.removeClass('alert-success alert-danger').addClass(type === 'success' ? 'alert alert-success' : 'alert alert-danger');
+            element.html('<strong>' + (type === 'success' ? 'Success:' : 'Error:') + '</strong><br><pre>' + JSON.stringify(response, null, 2) + '</pre>');
+            element.show();
+        }
+        
+        // GET Functions
+        function testGetAll() {
+            makeAjaxCall('/api/products', 'GET', null, 'getall-response');
+        }
+        
+        function testGetById() {
+            var id = $('#getid-input').val();
+            if (!id) { alert('Please enter a product ID'); return; }
+            makeAjaxCall('/api/products/' + id, 'GET', null, 'getid-response');
+        }
+        
+        function testGetByCategory() {
+            var category = $('#getcategory-input').val();
+            if (!category) { alert('Please enter a category'); return; }
+            makeAjaxCall('/api/products/category/' + category, 'GET', null, 'getcategory-response');
+        }
+        
+        function testSearchProducts() {
+            var name = $('#search-name').val();
+            var minPrice = $('#search-minprice').val();
+            var maxPrice = $('#search-maxprice').val();
+            var url = '/api/products/search?';
+            var params = [];
+            if (name) params.push('name=' + encodeURIComponent(name));
+            if (minPrice) params.push('minPrice=' + minPrice);
+            if (maxPrice) params.push('maxPrice=' + maxPrice);
+            url += params.join('&');
+            makeAjaxCall(url, 'GET', null, 'search-response');
+        }
+        
+        function testPriceRange() {
+            var minPrice = $('#pricerange-min').val();
+            var maxPrice = $('#pricerange-max').val();
+            if (!minPrice || !maxPrice) { alert('Please enter both min and max price'); return; }
+            makeAjaxCall('/api/products/pricerange?minPrice=' + minPrice + '&maxPrice=' + maxPrice, 'GET', null, 'pricerange-response');
+        }
+        
+        // POST Functions
+        function testPost() {
+            var jsonData = $('#post-input').val();
+            if (!jsonData) { alert('Please enter JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products', 'POST', data, 'post-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPostValidated() {
+            var jsonData = $('#postvalidated-input').val();
+            if (!jsonData) { alert('Please enter JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/validated', 'POST', data, 'postvalidated-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPostCustomer() {
+            var jsonData = $('#postcustomer-input').val();
+            if (!jsonData) { alert('Please enter JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/customers', 'POST', data, 'postcustomer-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPostRequired() {
+            var jsonData = $('#postrequired-input').val();
+            if (!jsonData) { alert('Please enter JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/required', 'POST', data, 'postrequired-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPostPrice() {
+            var jsonData = $('#postprice-input').val();
+            if (!jsonData) { alert('Please enter JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/pricevalidation', 'POST', data, 'postprice-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        // PUT Functions
+        function testPut() {
+            var id = $('#put-id').val();
+            var jsonData = $('#put-input').val();
+            if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/' + id, 'PUT', data, 'put-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPutName() {
+            var id = $('#putname-id').val();
+            var name = $('#putname-name').val();
+            if (!id || !name) { alert('Please enter both ID and name'); return; }
+            makeAjaxCall('/api/products/' + id + '/name?name=' + encodeURIComponent(name), 'PUT', null, 'putname-response');
+        }
+        
+        function testPutPrice() {
+            var id = $('#putprice-id').val();
+            var price = $('#putprice-price').val();
+            if (!id || !price) { alert('Please enter both ID and price'); return; }
+            makeAjaxCall('/api/products/' + id + '/price?price=' + price, 'PUT', null, 'putprice-response');
+        }
+        
+        function testPutValidated() {
+            var id = $('#putvalidated-id').val();
+            var jsonData = $('#putvalidated-input').val();
+            if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/' + id + '/validated', 'PUT', data, 'putvalidated-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        function testPutStock() {
+            var id = $('#putstock-id').val();
+            var jsonData = $('#putstock-input').val();
+            if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
+            try {
+                var data = JSON.parse(jsonData);
+                makeAjaxCall('/api/products/' + id + '/stock', 'PUT', data, 'putstock-response');
+            } catch (e) {
+                alert('Invalid JSON format');
+            }
+        }
+        
+        // DELETE Functions
+        function testDelete() {
+            var id = $('#delete-id').val();
+            if (!id) { alert('Please enter a product ID'); return; }
+            makeAjaxCall('/api/products/' + id, 'DELETE', null, 'delete-response');
+        }
+        
+        function testDeleteByName() {
+            var name = $('#deletename-input').val();
+            if (!name) { alert('Please enter a product name'); return; }
+            makeAjaxCall('/api/products/name/' + encodeURIComponent(name), 'DELETE', null, 'deletename-response');
+        }
+        
+        function testDeleteCustomer() {
+            var id = $('#deletecustomer-id').val();
+            if (!id) { alert('Please enter a customer ID'); return; }
+            makeAjaxCall('/api/customers/' + id, 'DELETE', null, 'deletecustomer-response');
+        }
+        
+        function testDeleteChecked() {
+            var id = $('#deletecheck-id').val();
+            if (!id) { alert('Please enter a product ID'); return; }
+            makeAjaxCall('/api/products/' + id + '/checked', 'DELETE', null, 'deletecheck-response');
+        }
+        
+        function testDeleteBusiness() {
+            var id = $('#deletebusiness-id').val();
+            if (!id) { alert('Please enter a product ID'); return; }
+            makeAjaxCall('/api/products/' + id + '/business', 'DELETE', null, 'deletebusiness-response');
+        }
+    </script>
+</body>
+</html>
