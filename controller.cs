@@ -34,7 +34,7 @@ namespace HelloWorldMvcApp
         }
 
         // =============================================================================
-        // DEMO EXAMPLES (4 complete examples for teacher demonstration)
+        // DEMO EXAMPLES (4 complete examples for demo)
         // =============================================================================
 
         // DEMO 1: GET - Get all products
@@ -160,50 +160,22 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult GetProductById(int id)
         {
-            try
-            {
-                var product = _products.FirstOrDefault(p => p.Id == id);
-                if (product == null)
-                {
-                    Response.StatusCode = 404; // Not Found
-                    return Json(new { error = "Product not found" }, JsonRequestBehavior.AllowGet);
-                }
-                
-                return Json(product, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 500;
-                return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-            
             // TODO: Students implement this
             // Find product by ID and return it
             // Return 404 if not found
             
-            //return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
         }
 
         // GET Easy 2: Get products by category (another variation)
         [HttpGet]
         public JsonResult GetProductsByCategory(string category)
         {
-            try
-            {
-                var products = _products.Where(p => p.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
-                return Json(products, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 500;
-                return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-            
             // TODO: Students implement this
             // Filter products by category
             // Return empty list if no products found in category
             
-            //return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
         }
 
         // GET Medium: Get products with filtering/search parameters
