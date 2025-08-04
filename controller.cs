@@ -34,7 +34,7 @@ namespace HelloWorldMvcApp
         }
 
         // =============================================================================
-        // DEMO EXAMPLES (4 complete examples for demo)
+        // DEMO EXAMPLES (4 complete examples for teacher demonstration)
         // =============================================================================
 
         // DEMO 1: GET - Get all products
@@ -160,20 +160,50 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult GetProductById(int id)
         {
+            try
+            {
+                var product = _products.FirstOrDefault(p => p.Id == id);
+                if (product == null)
+                {
+                    Response.StatusCode = 404; // Not Found
+                    return Json(new { error = "Product not found" }, JsonRequestBehavior.AllowGet);
+                }
+                
+                return Json(product, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            
+            // TODO: Students implement this
             // Find product by ID and return it
             // Return 404 if not found
             
-            return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
+            //return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
         }
 
         // GET Easy 2: Get products by category (another variation)
         [HttpGet]
         public JsonResult GetProductsByCategory(string category)
         {
+            try
+            {
+                var products = _products.Where(p => p.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
+                return Json(products, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            
+            // TODO: Students implement this
             // Filter products by category
             // Return empty list if no products found in category
             
-            return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
+            //return Json(new { message = "Not implemented yet" }, JsonRequestBehavior.AllowGet);
         }
 
         // GET Medium: Get products with filtering/search parameters
@@ -211,6 +241,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
             
+            // TODO: Students implement this
             // Filter products by name (contains), minPrice, and maxPrice
             // Use LINQ Where clauses for filtering
             
@@ -239,6 +270,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
             
+            // TODO: Students implement this
             // Return products where price is between minPrice and maxPrice (inclusive)
             // Validate that minPrice <= maxPrice
             
@@ -279,7 +311,8 @@ namespace HelloWorldMvcApp
                 Response.StatusCode = 500;
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
-
+            
+            // TODO: Students implement this
             // Add product but check if name already exists
             // Return 409 (Conflict) if product name already exists
             
@@ -311,6 +344,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Similar to AddProduct but for Customer entity
             // Validate ModelState and assign new ID
             
@@ -352,6 +386,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Check that Name, Price, and Category are not null/empty
             // Return specific error messages for missing fields
             
@@ -390,6 +425,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Validate that price is between $1 and $5000
             // Return 400 with specific error message if price is out of range
             
@@ -428,6 +464,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Find product by ID and update only the name
             // Validate that name is not null or empty
             
@@ -463,6 +500,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Find product by ID and update only the price
             // Validate that price is greater than 0
             
@@ -517,6 +555,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Update product but validate all fields before updating
             // Check ModelState and return appropriate error messages
             
@@ -565,6 +604,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Update product but ensure stock is never negative
             // Return 400 if trying to set negative stock
             
@@ -596,6 +636,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Find and delete product by name
             // Return 404 if product with that name doesn't exist
             
@@ -624,6 +665,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Similar to DeleteProduct but for Customer entity
             // Return appropriate success/error messages
             
@@ -658,6 +700,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Check if product exists before attempting to delete
             // Return informative messages about the operation
             
@@ -701,6 +744,7 @@ namespace HelloWorldMvcApp
                 return Json(new { error = "Internal server error: " + ex.Message });
             }
             
+            // TODO: Students implement this
             // Don't allow deletion if product stock > 0 (business rule)
             // Return 409 (Conflict) if trying to delete product with stock
             
