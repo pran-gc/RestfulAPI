@@ -359,69 +359,109 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     
     <script>
-        function makeAjaxCall(url, method, data, responseDiv) {
-            var settings = {
-                url: url,
-                type: method,
-                dataType: 'json',
-                success: function(response) {
-                    showResponse(responseDiv, 'success', response);
-                },
-                error: function(xhr, status, error) {
-                    showResponse(responseDiv, 'error', xhr.responseText || error);
-                }
-            };
-            
-            if (data && (method === 'POST' || method === 'PUT')) {
-                settings.contentType = 'application/json';
-                settings.data = JSON.stringify(data);
-            }
-            
-            $.ajax(settings);
-        }
         
         function showResponse(elementId, type, response) {
+            console.log('Showing response in:', elementId, 'Type:', type, 'Response:', response);
             var element = $('#' + elementId);
             element.removeClass('alert-success alert-danger').addClass(type === 'success' ? 'alert alert-success' : 'alert alert-danger');
-            element.html('<strong>' + (type === 'success' ? 'Success:' : 'Error:') + '</strong><br><pre>' + JSON.stringify(response, null, 2) + '</pre>');
+            
+            var responseText = response;
+            if (typeof response === 'object') {
+                responseText = JSON.stringify(response, null, 2);
+            }
+            
+            element.html('<strong>' + (type === 'success' ? 'Success:' : 'Error:') + '</strong><br><pre>' + responseText + '</pre>');
             element.show();
         }
         
         // GET Functions
         function testGetAll() {
-            makeAjaxCall('/api/products', 'GET', null, 'getall-response');
+            console.log('testGetAll function called');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="GetAllProducts", controller="Home"})',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('getall-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('getall-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testGetById() {
             var id = $('#getid-input').val();
             if (!id) { alert('Please enter a product ID'); return; }
-            makeAjaxCall('/api/products/' + id, 'GET', null, 'getid-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="GetProductById", controller="Home"})',
+                type: 'GET',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('getid-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('getid-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testGetByCategory() {
             var category = $('#getcategory-input').val();
             if (!category) { alert('Please enter a category'); return; }
-            makeAjaxCall('/api/products/category/' + category, 'GET', null, 'getcategory-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="GetProductsByCategory", controller="Home"})',
+                type: 'GET',
+                data: { category: category },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('getcategory-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('getcategory-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testSearchProducts() {
             var name = $('#search-name').val();
             var minPrice = $('#search-minprice').val();
             var maxPrice = $('#search-maxprice').val();
-            var url = '/api/products/search?';
-            var params = [];
-            if (name) params.push('name=' + encodeURIComponent(name));
-            if (minPrice) params.push('minPrice=' + minPrice);
-            if (maxPrice) params.push('maxPrice=' + maxPrice);
-            url += params.join('&');
-            makeAjaxCall(url, 'GET', null, 'search-response');
+            var searchData = {};
+            if (name) searchData.name = name;
+            if (minPrice) searchData.minPrice = minPrice;
+            if (maxPrice) searchData.maxPrice = maxPrice;
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="SearchProducts", controller="Home"})',
+                type: 'GET',
+                data: searchData,
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('search-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('search-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testPriceRange() {
             var minPrice = $('#pricerange-min').val();
             var maxPrice = $('#pricerange-max').val();
             if (!minPrice || !maxPrice) { alert('Please enter both min and max price'); return; }
-            makeAjaxCall('/api/products/pricerange?minPrice=' + minPrice + '&maxPrice=' + maxPrice, 'GET', null, 'pricerange-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="GetProductsInPriceRange", controller="Home"})',
+                type: 'GET',
+                data: { minPrice: minPrice, maxPrice: maxPrice },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('pricerange-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('pricerange-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         // POST Functions
@@ -430,7 +470,18 @@
             if (!jsonData) { alert('Please enter JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products', 'POST', data, 'post-response');
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="AddProduct", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('post-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('post-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -441,7 +492,18 @@
             if (!jsonData) { alert('Please enter JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/validated', 'POST', data, 'postvalidated-response');
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="AddProductWithValidation", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('postvalidated-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('postvalidated-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -452,7 +514,18 @@
             if (!jsonData) { alert('Please enter JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/customers', 'POST', data, 'postcustomer-response');
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="AddCustomer", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('postcustomer-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('postcustomer-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -463,7 +536,18 @@
             if (!jsonData) { alert('Please enter JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/required', 'POST', data, 'postrequired-response');
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="AddProductWithRequiredFields", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('postrequired-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('postrequired-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -474,7 +558,18 @@
             if (!jsonData) { alert('Please enter JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/pricevalidation', 'POST', data, 'postprice-response');
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="AddProductWithPriceValidation", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('postprice-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('postprice-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -487,7 +582,19 @@
             if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/' + id, 'PUT', data, 'put-response');
+                data.id = id; // Add ID to the data object
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="UpdateProduct", controller="Home"})',
+                    type: 'PUT', // Use POST instead of PUT for better compatibility
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('put-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('put-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -497,14 +604,36 @@
             var id = $('#putname-id').val();
             var name = $('#putname-name').val();
             if (!id || !name) { alert('Please enter both ID and name'); return; }
-            makeAjaxCall('/api/products/' + id + '/name?name=' + encodeURIComponent(name), 'PUT', null, 'putname-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="UpdateProductName", controller="Home"})',
+                type: 'POST',
+                data: { id: id, name: name },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('putname-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('putname-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testPutPrice() {
             var id = $('#putprice-id').val();
             var price = $('#putprice-price').val();
             if (!id || !price) { alert('Please enter both ID and price'); return; }
-            makeAjaxCall('/api/products/' + id + '/price?price=' + price, 'PUT', null, 'putprice-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="UpdateProductPrice", controller="Home"})',
+                type: 'POST',
+                data: { id: id, price: price },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('putprice-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('putprice-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testPutValidated() {
@@ -513,7 +642,19 @@
             if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/' + id + '/validated', 'PUT', data, 'putvalidated-response');
+                data.id = id;
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="UpdateProductWithValidation", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('putvalidated-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('putvalidated-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -525,7 +666,19 @@
             if (!id || !jsonData) { alert('Please enter both ID and JSON data'); return; }
             try {
                 var data = JSON.parse(jsonData);
-                makeAjaxCall('/api/products/' + id + '/stock', 'PUT', data, 'putstock-response');
+                data.id = id;
+                $.ajax({
+                    url: '@Url.RouteUrl(new{ action="UpdateProductWithStockCheck", controller="Home"})',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        showResponse('putstock-response', 'success', response);
+                    },
+                    error: function(xhr, status, error) {
+                        showResponse('putstock-response', 'error', xhr.responseText || error);
+                    }
+                });
             } catch (e) {
                 alert('Invalid JSON format');
             }
@@ -535,31 +688,86 @@
         function testDelete() {
             var id = $('#delete-id').val();
             if (!id) { alert('Please enter a product ID'); return; }
-            makeAjaxCall('/api/products/' + id, 'DELETE', null, 'delete-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="DeleteProduct", controller="Home"})',
+                type: 'DELETE',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('delete-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('delete-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testDeleteByName() {
             var name = $('#deletename-input').val();
             if (!name) { alert('Please enter a product name'); return; }
-            makeAjaxCall('/api/products/name/' + encodeURIComponent(name), 'DELETE', null, 'deletename-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="DeleteProductByName", controller="Home"})',
+                type: 'POST',
+                data: { name: name },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('deletename-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('deletename-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testDeleteCustomer() {
             var id = $('#deletecustomer-id').val();
             if (!id) { alert('Please enter a customer ID'); return; }
-            makeAjaxCall('/api/customers/' + id, 'DELETE', null, 'deletecustomer-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="DeleteCustomer", controller="Home"})',
+                type: 'POST',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('deletecustomer-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('deletecustomer-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testDeleteChecked() {
             var id = $('#deletecheck-id').val();
             if (!id) { alert('Please enter a product ID'); return; }
-            makeAjaxCall('/api/products/' + id + '/checked', 'DELETE', null, 'deletecheck-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="DeleteProductWithCheck", controller="Home"})',
+                type: 'POST',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('deletecheck-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('deletecheck-response', 'error', xhr.responseText || error);
+                }
+            });
         }
         
         function testDeleteBusiness() {
             var id = $('#deletebusiness-id').val();
             if (!id) { alert('Please enter a product ID'); return; }
-            makeAjaxCall('/api/products/' + id + '/business', 'DELETE', null, 'deletebusiness-response');
+            $.ajax({
+                url: '@Url.RouteUrl(new{ action="DeleteProductWithBusinessRule", controller="Home"})',
+                type: 'POST',
+                data: { id: id },
+                dataType: 'json',
+                success: function(response) {
+                    showResponse('deletebusiness-response', 'success', response);
+                },
+                error: function(xhr, status, error) {
+                    showResponse('deletebusiness-response', 'error', xhr.responseText || error);
+                }
+            });
         }
     </script>
 </body>
