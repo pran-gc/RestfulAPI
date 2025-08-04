@@ -148,7 +148,7 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult GetProductById(int id)
         {
-            // TODO: Students implement this
+            
             // Find product by ID and return it
             // Return 404 if not found
             
@@ -159,7 +159,7 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult GetProductsByCategory(string category)
         {
-            // TODO: Students implement this
+            
             // Filter products by category
             // Return empty list if no products found in category
             
@@ -170,7 +170,7 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult SearchProducts(string name = "", decimal? minPrice = null, decimal? maxPrice = null)
         {
-            // TODO: Students implement this
+            
             // Filter products by name (contains), minPrice, and maxPrice
             // Use LINQ Where clauses for filtering
             
@@ -181,7 +181,7 @@ namespace HelloWorldMvcApp
         [HttpGet]
         public JsonResult GetProductsInPriceRange(decimal minPrice, decimal maxPrice)
         {
-            // TODO: Students implement this
+            
             // Return products where price is between minPrice and maxPrice (inclusive)
             // Validate that minPrice <= maxPrice
             
@@ -195,7 +195,7 @@ namespace HelloWorldMvcApp
         [HttpPost]
         public JsonResult AddProductWithValidation(Product product)
         {
-            // TODO: Students implement this
+            
             // Add product but check if name already exists
             // Return 409 (Conflict) if product name already exists
             
@@ -206,7 +206,7 @@ namespace HelloWorldMvcApp
         [HttpPost]
         public JsonResult AddCustomer(Customer customer)
         {
-            // TODO: Students implement this
+            
             // Similar to AddProduct but for Customer entity
             // Validate ModelState and assign new ID
             
@@ -217,7 +217,7 @@ namespace HelloWorldMvcApp
         [HttpPost]
         public JsonResult AddProductWithRequiredFields(Product product)
         {
-            // TODO: Students implement this
+            
             // Check that Name, Price, and Category are not null/empty
             // Return specific error messages for missing fields
             
@@ -228,7 +228,7 @@ namespace HelloWorldMvcApp
         [HttpPost]
         public JsonResult AddProductWithPriceValidation(Product product)
         {
-            // TODO: Students implement this
+            
             // Validate that price is between $1 and $5000
             // Return 400 with specific error message if price is out of range
             
@@ -242,7 +242,7 @@ namespace HelloWorldMvcApp
         [HttpPut]
         public JsonResult UpdateProductName(int id, string name)
         {
-            // TODO: Students implement this
+            
             // Find product by ID and update only the name
             // Validate that name is not null or empty
             
@@ -253,7 +253,7 @@ namespace HelloWorldMvcApp
         [HttpPut]
         public JsonResult UpdateProductPrice(int id, decimal price)
         {
-            // TODO: Students implement this
+            
             // Find product by ID and update only the price
             // Validate that price is greater than 0
             
@@ -264,7 +264,7 @@ namespace HelloWorldMvcApp
         [HttpPut]
         public JsonResult UpdateProductWithValidation(int id, Product updatedProduct)
         {
-            // TODO: Students implement this
+            
             // Update product but validate all fields before updating
             // Check ModelState and return appropriate error messages
             
@@ -275,7 +275,7 @@ namespace HelloWorldMvcApp
         [HttpPut]
         public JsonResult UpdateProductWithStockCheck(int id, Product updatedProduct)
         {
-            // TODO: Students implement this
+            
             // Update product but ensure stock is never negative
             // Return 400 if trying to set negative stock
             
@@ -289,7 +289,7 @@ namespace HelloWorldMvcApp
         [HttpDelete]
         public JsonResult DeleteProductByName(string name)
         {
-            // TODO: Students implement this
+            
             // Find and delete product by name
             // Return 404 if product with that name doesn't exist
             
@@ -300,7 +300,7 @@ namespace HelloWorldMvcApp
         [HttpDelete]
         public JsonResult DeleteCustomer(int id)
         {
-            // TODO: Students implement this
+            
             // Similar to DeleteProduct but for Customer entity
             // Return appropriate success/error messages
             
@@ -311,7 +311,7 @@ namespace HelloWorldMvcApp
         [HttpDelete]
         public JsonResult DeleteProductWithCheck(int id)
         {
-            // TODO: Students implement this
+            
             // Check if product exists before attempting to delete
             // Return informative messages about the operation
             
@@ -322,7 +322,7 @@ namespace HelloWorldMvcApp
         [HttpDelete]
         public JsonResult DeleteProductWithBusinessRule(int id)
         {
-            // TODO: Students implement this
+            
             // Don't allow deletion if product stock > 0 (business rule)
             // Return 409 (Conflict) if trying to delete product with stock
             
